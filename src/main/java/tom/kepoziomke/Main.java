@@ -1,13 +1,12 @@
 package tom.kepoziomke;
 
-import net.jacobpeterson.alpaca.AlpacaAPI;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import tom.kepoziomke.algorithms.SillyAlgorithm;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-
+    public static void main(String[] args) {
+        AlpacaApp app = new AlpacaApp();
+        app.setAlgorithm(new SillyAlgorithm(2.0, 3.0));
+        app.start();
     }
 }
