@@ -1,4 +1,4 @@
-package org.example;
+package tom.kepoziomke;
 
 import net.jacobpeterson.alpaca.AlpacaAPI;
 import net.jacobpeterson.alpaca.model.endpoint.account.Account;
