@@ -1,12 +1,13 @@
 package tom.kepoziomke;
 
-import tom.kepoziomke.algorithms.SillyAlgorithm;
+import tom.kepoziomke.algorithm.DebugAlgorithm;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         AlpacaApp app = new AlpacaApp();
-        app.setAlgorithm(new SillyAlgorithm(2.0, 3.0));
+        app.setAlgorithm(new DebugAlgorithm());
         app.start();
+        // app.stop();
     }
 }
