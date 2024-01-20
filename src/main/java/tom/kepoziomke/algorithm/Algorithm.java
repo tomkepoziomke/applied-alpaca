@@ -1,7 +1,7 @@
 package tom.kepoziomke.algorithm;
 
-import tom.kepoziomke.connector.AlpacaReadOnlyConnector;
+import tom.kepoziomke.connector.ReadOnlyConnector;
 
 public interface Algorithm {
-    AlgorithmResult run(AlpacaReadOnlyConnector connector);
+    AlgorithmResult run(ReadOnlyConnector connector);
 }

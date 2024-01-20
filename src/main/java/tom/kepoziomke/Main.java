@@ -1,18 +1,15 @@
 package tom.kepoziomke;
-
-import tom.kepoziomke.algorithm.Algorithm;
-import tom.kepoziomke.algorithm.DebugAlgorithm;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     public static void main(String[] args) throws InterruptedException  {
+
         AlpacaApp app = new AlpacaApp();
-        Algorithm myAlg = new DebugAlgorithm();
-        app.addAlgorithm(myAlg, 1000, TimeUnit.MILLISECONDS);
-        Thread.sleep(3000);
+        app.addAlgorithm(new SillyCryptoAlgorithm(List.of("BTC/USD", "ETH/USD", "DOGE/USD")), 30, TimeUnit.SECONDS);
+        app.start();
+        Thread.sleep(1000 * 60 * 60);
         app.stop();
     }
 }

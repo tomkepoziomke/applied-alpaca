@@ -1,5 +1,5 @@
 package tom.kepoziomke.algorithm;
 
-public abstract class AlgorithmResult {
+public interface AlgorithmResult {
 
 }

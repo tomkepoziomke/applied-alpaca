@@ -2,14 +2,14 @@ package tom.kepoziomke.connector;
 
 import net.jacobpeterson.alpaca.AlpacaAPI;
 
-public class AlpacaConnectorBase {
+public class ConnectorBase {
     protected final AlpacaAPI api;
 
-    public AlpacaConnectorBase() {
+    public ConnectorBase() {
         this.api = new AlpacaAPI();
     }
 
-    public AlpacaConnectorBase(AlpacaAPI api) {
+    public ConnectorBase(AlpacaAPI api) {
         this.api = api;
     }
 
