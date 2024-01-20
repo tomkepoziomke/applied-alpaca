@@ -26,6 +26,7 @@ public class SillyCryptoAlgorithm implements Algorithm {
 
     @Override
     public AlgorithmResult run(ReadOnlyConnector connector) {
+        // Filter symbols for only those actually existing in the crypto market.
         var assets = connector.assets(true);
         if (assets.isPresent()) {
             symbols = symbols.
@@ -41,33 +42,24 @@ public class SillyCryptoAlgorithm implements Algorithm {
         else {
             return new EmptyResult();
         }
+
+        // Silly part begins here.
         Random rnd = new Random();
         boolean buy = rnd.nextBoolean();
         String symbol = symbols.get(rnd.nextInt(symbols.size()));
         double quantity = rnd.nextDouble() / 100;
-        if (symbol.equals("DOGE/USD")) {
-            quantity *= 10000; // FOR DEBUG
-        }
+
+
+        if (symbol.equals("DOGE/USD")) {    /// FOR DEBUG ONLY
+            quantity *= 10000;              /// FOR DEBUG ONLY
+        }                                   /// FOR DEBUG ONLY
+
+
         if (buy) {
-            var account = connector.account();
-            var cryptoQuotes = connector.latestCryptoQuote(symbol);
-            if (account.isPresent() && cryptoQuotes.isPresent()) {
-                BigDecimal cash = new BigDecimal(account.get().getCash());
-                double askPrice = cryptoQuotes.get().getQuotes().get(symbol).getAskPrice();
-                BigDecimal totalPrice = new BigDecimal(quantity * askPrice);
-                if (cash.compareTo(totalPrice) > 0) {
-                    return new ActiveResult(symbol, OrderSide.BUY, quantity);
-                }
-            }
+            return new ActiveResult(symbol, OrderSide.BUY, quantity, true);
         }
         else {
-            var positions = connector.positions();
-            if (positions.isPresent()) {
-                Optional<Position> pos = positions.get().stream().filter(position -> position.getSymbol().equals(symbol.replace("/", ""))).findFirst();
-                if (pos.isPresent())
-                    return new ActiveResult(symbol, OrderSide.SELL, Math.max(quantity, Double.parseDouble(pos.get().getQuantity())));
-            }
+            return new ActiveResult(symbol, OrderSide.SELL, quantity, true);
         }
-        return new EmptyResult();
     }
 }

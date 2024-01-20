@@ -156,14 +156,14 @@ public class AlpacaApp {
 
     public void stop() {
         running.set(false);
-        outputExecutor.shutdown();
         algorithmExecutor.shutdown();
         try {
             outputExecutor.awaitTermination(DEFAULT_TIMEOUT_DURATION, DEFAULT_TIMEOUT_UNIT);
             algorithmExecutor.awaitTermination(DEFAULT_TIMEOUT_DURATION, DEFAULT_TIMEOUT_UNIT);
+            outputExecutor.shutdown();
         }
         catch (InterruptedException e) {
-            logger.error("Interrupted during stop", e);
+            logger.error("Interruption during termination", e);
         }
 
     }

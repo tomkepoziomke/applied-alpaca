@@ -7,12 +7,14 @@ public class ActiveResult implements AlgorithmResult {
     private final String symbol;
     private final OrderSide side;
     private final double quantity;
+    private final boolean crypto;
 
 
-    public ActiveResult(String symbol, OrderSide side, double quantity) {
+    public ActiveResult(String symbol, OrderSide side, double quantity, boolean crypto) {
         this.symbol = symbol;
         this.side = side;
         this.quantity = quantity;
+        this.crypto = crypto;
     }
 
     public double getQuantity() {
@@ -25,6 +27,10 @@ public class ActiveResult implements AlgorithmResult {
 
     public OrderSide getSide() {
         return side;
+    }
+
+    public boolean isCrypto() {
+        return crypto;
     }
 
     @Override
