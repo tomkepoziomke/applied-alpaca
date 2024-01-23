@@ -37,61 +37,61 @@ public class ReadOnlyConnector extends ConnectorBase {
         super(api);
     }
 
-    public Optional<Account> account() {
+    public Response<Account> account() {
         try {
             synchronized (this.api) {
                 var endpoint = api.account();
-                return Optional.of(endpoint.get());
+                return Response.of(endpoint.get());
             }
         }
         catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<List<Asset>> assets(boolean crypto) {
+    public Response<List<Asset>> assets(boolean crypto) {
         try {
             synchronized (this.api) {
                 var endpoint = api.assets();
                 if (crypto)
-                    return Optional.of(endpoint.get(AssetStatus.ACTIVE, AssetClass.CRYPTO));
+                    return Response.of(endpoint.get(AssetStatus.ACTIVE, AssetClass.CRYPTO));
                 else
-                    return Optional.of(endpoint.get(AssetStatus.ACTIVE, AssetClass.US_EQUITY));
+                    return Response.of(endpoint.get(AssetStatus.ACTIVE, AssetClass.US_EQUITY));
             }
         }
         catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<Asset> asset(String symbol) {
+    public Response<Asset> asset(String symbol) {
         try {
             synchronized (this.api) {
                 var endpoint = api.assets();
-                return Optional.of(endpoint.getBySymbol(symbol));
+                return Response.of(endpoint.getBySymbol(symbol));
             }
         }
         catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<Clock> clock() {
+    public Response<Clock> clock() {
         try {
             synchronized (this.api) {
                 var endpoint = api.clock();
-                return Optional.of(endpoint.get());
+                return Response.of(endpoint.get());
             }
         } catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<List<Order>> orders(List<String> symbols, ZonedDateTime after, ZonedDateTime until) {
+    public Response<List<Order>> orders(List<String> symbols, ZonedDateTime after, ZonedDateTime until) {
         try {
             synchronized (this.api) {
                 var endpoint = api.orders();
-                return Optional.of(endpoint.get(
+                return Response.of(endpoint.get(
                         CurrentOrderStatus.OPEN,
                         null,
                         after,
@@ -103,45 +103,45 @@ public class ReadOnlyConnector extends ConnectorBase {
 
         }
         catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<List<Position>> positions() {
+    public Response<List<Position>> positions() {
         try {
             synchronized (this.api) {
                 var endpoint = api.positions();
-                return Optional.of(endpoint.get());
+                return Response.of(endpoint.get());
             }
         }
         catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<LatestStockQuoteResponse> latestStockQuote(String symbol) {
+    public Response<LatestStockQuoteResponse> latestStockQuote(String symbol) {
         try {
             synchronized (this.api) {
                 var endpoint = api.stockMarketData();
-                return Optional.of(endpoint.getLatestQuote(symbol));
+                return Response.of(endpoint.getLatestQuote(symbol));
             }
         } catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<LatestCryptoQuotesResponse> latestCryptoQuote(String symbol) {
+    public Response<LatestCryptoQuotesResponse> latestCryptoQuote(String symbol) {
         try {
             synchronized (this.api) {
                 var endpoint = api.cryptoMarketData();
-                return Optional.of(endpoint.getLatestQuotes(List.of(symbol)));
+                return Response.of(endpoint.getLatestQuotes(List.of(symbol)));
             }
         } catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<HashMap<String, ArrayList<StockBar>>> stockBars(List<String> symbols, ZonedDateTime start, ZonedDateTime end, int duration, BarTimePeriod period) {
+    public Response<HashMap<String, ArrayList<StockBar>>> stockBars(List<String> symbols, ZonedDateTime start, ZonedDateTime end, int duration, BarTimePeriod period) {
         try {
             synchronized (this.api) {
                 var endpoint = api.stockMarketData();
@@ -161,15 +161,15 @@ public class ReadOnlyConnector extends ConnectorBase {
                     bars.putAll(response.getBars());
                     token = response.getNextPageToken();
                 } while (!token.isEmpty());
-                return Optional.of(bars);
+                return Response.of(bars);
             }
         }
         catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 
-    public Optional<HashMap<String, ArrayList<CryptoBar>>> cryptoBars(List<String> symbols, ZonedDateTime start, ZonedDateTime end, int duration, BarTimePeriod period) {
+    public Response<HashMap<String, ArrayList<CryptoBar>>> cryptoBars(List<String> symbols, ZonedDateTime start, ZonedDateTime end, int duration, BarTimePeriod period) {
         try {
             synchronized (this.api) {
                 var endpoint = api.cryptoMarketData();
@@ -187,11 +187,11 @@ public class ReadOnlyConnector extends ConnectorBase {
                     bars.putAll(response.getBars());
                     token = response.getNextPageToken();
                 } while (!token.isEmpty());
-                return Optional.of(bars);
+                return Response.of(bars);
             }
         }
         catch (AlpacaClientException e) {
-            return Optional.empty();
+            return Response.exception(e);
         }
     }
 }

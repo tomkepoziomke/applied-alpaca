@@ -1,6 +1,8 @@
 package tom.kepoziomke;
 
 import net.jacobpeterson.alpaca.model.endpoint.orders.enums.OrderSide;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tom.kepoziomke.algorithm.ActiveResult;
 import tom.kepoziomke.algorithm.Algorithm;
 import tom.kepoziomke.algorithm.AlgorithmResult;
@@ -10,18 +12,19 @@ import tom.kepoziomke.connector.ReadOnlyConnector;
 import java.util.List;
 import java.util.Random;
 
-public class SillyCryptoAlgorithm implements Algorithm {
+public class SillyStockMarketAlgorithm implements Algorithm {
 
     private List<String> symbols;
+    private Logger logger = LoggerFactory.getLogger(SillyStockMarketAlgorithm.class);
 
-    public SillyCryptoAlgorithm(List<String> symbols) {
+    public SillyStockMarketAlgorithm(List<String> symbols) {
         this.symbols = symbols;
     }
 
     @Override
     public AlgorithmResult run(ReadOnlyConnector connector) {
-        // Filter symbols for only those actually existing in the crypto market.
-        var assets = connector.assets(true);
+        // Filter symbols for only those actually existing in the stock market.
+        var assets = connector.assets(false);
         if (assets.isPresent()) {
             symbols = symbols.
                     stream().
@@ -34,26 +37,22 @@ public class SillyCryptoAlgorithm implements Algorithm {
                 return new EmptyResult();
         }
         else {
+            logger.info(assets.exception().getMessage());
             return new EmptyResult();
         }
 
         // Silly part begins here.
+        // We randomly sell or buy 1-5 of random stock.
         Random rnd = new Random();
         boolean buy = rnd.nextBoolean();
         String symbol = symbols.get(rnd.nextInt(symbols.size()));
-        double quantity = rnd.nextDouble() / 100;
-
-
-        if (symbol.equals("DOGE/USD")) {    /// FOR DEBUG ONLY
-            quantity *= 10000;              /// FOR DEBUG ONLY
-        }                                   /// FOR DEBUG ONLY
-
+        double quantity = rnd.nextInt(1, 5);
 
         if (buy) {
-            return new ActiveResult(symbol, OrderSide.BUY, quantity, true);
+            return new ActiveResult(symbol, OrderSide.BUY, quantity, false);
         }
         else {
-            return new ActiveResult(symbol, OrderSide.SELL, quantity, true);
+            return new ActiveResult(symbol, OrderSide.SELL, quantity, false);
         }
     }
 }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tom.kepoziomke.algorithm.AlgorithmResult;
 import tom.kepoziomke.algorithm.Algorithm;
+import tom.kepoziomke.algorithm.EmptyResult;
 import tom.kepoziomke.connector.Connector;
 import tom.kepoziomke.outputhandler.BasicOutputHandler;
 import tom.kepoziomke.outputhandler.OutputHandler;
@@ -126,7 +127,8 @@ public class AlpacaApp {
 
     private void retrieveAlgorithmResult(Algorithm algorithm) {
         var result = algorithm.run(connector.read());
-        results.add(result);
+        if (!(result instanceof EmptyResult))
+            results.add(result);
     }
 
     private Future<?> runAlgorithmPeriodically(Algorithm algorithm, Integer interval, TimeUnit unit) {
