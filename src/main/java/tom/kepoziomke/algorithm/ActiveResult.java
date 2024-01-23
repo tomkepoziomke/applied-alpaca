@@ -9,7 +9,6 @@ public class ActiveResult implements AlgorithmResult {
     private final double quantity;
     private final boolean crypto;
 
-
     public ActiveResult(String symbol, OrderSide side, double quantity, boolean crypto) {
         this.symbol = symbol;
         this.side = side;

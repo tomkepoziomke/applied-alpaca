@@ -186,7 +186,7 @@ public class ReadOnlyConnector extends ConnectorBase {
                             period);
                     bars.putAll(response.getBars());
                     token = response.getNextPageToken();
-                } while (!token.isEmpty());
+                } while (token != null && !token.isEmpty());
                 return Response.of(bars);
             }
         }
