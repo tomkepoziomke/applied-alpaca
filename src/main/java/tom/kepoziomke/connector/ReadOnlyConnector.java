@@ -27,16 +27,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Read-only part of the connector.
+ */
 public class ReadOnlyConnector extends ConnectorBase {
 
+    /**
+     * Default constructor.
+     */
     public ReadOnlyConnector() {
         super();
     }
 
+    /**
+     * Parametrized constructor.
+     * @param api The AlpacaAPI object.
+     */
     public ReadOnlyConnector(AlpacaAPI api) {
         super(api);
     }
 
+    /**
+     * Queries the API for account information.
+     * @return Response with account info or an error information.
+     */
     public Response<Account> account() {
         try {
             synchronized (this.api) {
@@ -49,6 +63,11 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for all available crypto or regular assets.
+     * @param crypto Whether to query for crypto or regular assets.
+     * @return Response with assets or an error information.
+     */
     public Response<List<Asset>> assets(boolean crypto) {
         try {
             synchronized (this.api) {
@@ -64,6 +83,11 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for a single asset with given symbol.
+     * @param symbol The symbol of the asset.
+     * @return Response with the asset or an error information.
+     */
     public Response<Asset> asset(String symbol) {
         try {
             synchronized (this.api) {
@@ -76,6 +100,10 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for clock info.
+     * @return Response with the asset or an error information.
+     */
     public Response<Clock> clock() {
         try {
             synchronized (this.api) {
@@ -87,6 +115,13 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for the list of orders.
+     * @param symbols The symbols to look form.
+     * @param after Time after which the order took place.
+     * @param until Time before which the order took place.
+     * @return Response with orders or an error information.
+     */
     public Response<List<Order>> orders(List<String> symbols, ZonedDateTime after, ZonedDateTime until) {
         try {
             synchronized (this.api) {
@@ -107,6 +142,10 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for all available positions.
+     * @return Response with positions or an error information.
+     */
     public Response<List<Position>> positions() {
         try {
             synchronized (this.api) {
@@ -119,6 +158,11 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for last quote of a stock asset.
+     * @param symbol The symbol of the asset.
+     * @return Response with the quote or an error information.
+     */
     public Response<LatestStockQuoteResponse> latestStockQuote(String symbol) {
         try {
             synchronized (this.api) {
@@ -130,6 +174,11 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for last quote of a crypto asset.
+     * @param symbol The symbol of the asset.
+     * @return Response with the quote or an error information.
+     */
     public Response<LatestCryptoQuotesResponse> latestCryptoQuote(String symbol) {
         try {
             synchronized (this.api) {
@@ -141,6 +190,15 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for bars of list of stock market symbols.
+     * @param symbols The list of symbols.
+     * @param start The time moment after which we are interested in the bar data.
+     * @param end The time moment until which we are interested in the bar data.
+     * @param duration The amount of time units of each bar.
+     * @param period The time unit of the bar.
+     * @return Response with the bars or an error information.
+     */
     public Response<HashMap<String, ArrayList<StockBar>>> stockBars(List<String> symbols, ZonedDateTime start, ZonedDateTime end, int duration, BarTimePeriod period) {
         try {
             synchronized (this.api) {
@@ -169,6 +227,15 @@ public class ReadOnlyConnector extends ConnectorBase {
         }
     }
 
+    /**
+     * Queries the API for bars of list of crypto symbols.
+     * @param symbols The list of symbols.
+     * @param start The time moment after which we are interested in the bar data.
+     * @param end The time moment until which we are interested in the bar data.
+     * @param duration The amount of time units of each bar.
+     * @param period The time unit of the bar.
+     * @return Response with the bars or an error information.
+     */
     public Response<HashMap<String, ArrayList<CryptoBar>>> cryptoBars(List<String> symbols, ZonedDateTime start, ZonedDateTime end, int duration, BarTimePeriod period) {
         try {
             synchronized (this.api) {

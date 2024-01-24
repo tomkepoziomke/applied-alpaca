@@ -1,4 +1,4 @@
-package tom.kepoziomke.outputhandler;
+package tom.kepoziomke.app;
 
 import net.jacobpeterson.alpaca.model.endpoint.orders.enums.OrderSide;
 import net.jacobpeterson.alpaca.model.endpoint.positions.Position;
@@ -9,28 +9,34 @@ import tom.kepoziomke.algorithm.AlgorithmResult;
 import tom.kepoziomke.connector.Connector;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
+/**
+ * Basic implementation of the output handler.
+ */
 public class BasicOutputHandler implements OutputHandler {
 
     private final Connector connector;
-    private final BlockingQueue<AlgorithmResult> results;
-    public static final Integer DEFAULT_TIMEOUT_DURATION = 1000;
-    public static final TimeUnit DEFAULT_TIMEOUT_UNIT = TimeUnit.MILLISECONDS;
 
-    public BasicOutputHandler(Connector connector, BlockingQueue<AlgorithmResult> results) {
+    /**
+     * Constructor.
+     * @param connector Connector via which the handler handles API requests.
+     */
+    public BasicOutputHandler(Connector connector) {
         this.connector = connector;
-        this.results = results;
     }
 
+    /**
+     * Processes the list of algorithm results. Checks if the account is eligible for market transactions,
+     * filters unknown symbols, checks if we have sufficient positions, tries to make transactions if we do.
+     * @param results The list of algorithm results.
+     */
     @Override
-    public void output() {
+    public synchronized void output(List<AlgorithmResult> results) {
         Logger logger = LoggerFactory.getLogger(BasicOutputHandler.class);
-        try {
-            AlgorithmResult res = results.poll(DEFAULT_TIMEOUT_DURATION, DEFAULT_TIMEOUT_UNIT);
-            switch (res) {
+        for (AlgorithmResult result : results) {
+            switch (result) {
                 case ActiveResult active -> {
                     String symbol = active.getSymbol();
                     // Check if the asset exists in Alpaca database.
@@ -45,8 +51,7 @@ public class BasicOutputHandler implements OutputHandler {
                     if (account.isEmpty()) {
                         logger.error(account.exception().getMessage());
                         return;
-                    }
-                    else if (account.get().getAccountBlocked() || account.get().getTradingBlocked()) {
+                    } else if (account.get().getAccountBlocked() || account.get().getTradingBlocked()) {
                         logger.info("The account is unavailable for trading.");
                         return;
                     }
@@ -64,8 +69,7 @@ public class BasicOutputHandler implements OutputHandler {
                             }
                             double askPrice = cryptoQuotes.get().getQuotes().get(symbol).getAskPrice();
                             totalPrice = new BigDecimal(active.getQuantity() * askPrice);
-                        }
-                        else {
+                        } else {
                             var stockQuotes = connector.read().latestStockQuote(symbol);
                             if (stockQuotes.isEmpty()) {
                                 logger.error(stockQuotes.exception().getMessage());
@@ -81,11 +85,9 @@ public class BasicOutputHandler implements OutputHandler {
                             else
                                 logger.error("Error while placing buy order: " + response.exception().getMessage() + " " + active);
 
-                        }
-                        else
+                        } else
                             logger.info("Not enough cash to buy " + active.getQuantity() + " of " + active.getSymbol());
-                    }
-                    else if (active.getSide() == OrderSide.SELL) {
+                    } else if (active.getSide() == OrderSide.SELL) {
                         // Check if we want to sell more quantity than we actually own.
                         var positions = connector.read().positions();
                         if (positions.isPresent()) {
@@ -102,17 +104,14 @@ public class BasicOutputHandler implements OutputHandler {
                                 if (response.isPresent())
                                     logger.info("Successfully sold " + active.getQuantity() + " of " + active.getSymbol());
                                 else
-                                    logger.error("Error while placing sell order: " + response.exception().getMessage() + " " + active  );
+                                    logger.error("Error while placing sell order: " + response.exception().getMessage() + " " + active);
                             }
                         }
                     }
                 }
-                case null, default -> {}
+                case null, default -> {
+                }
             }
-
-        }
-        catch (InterruptedException e) {
-            logger.error("Interruption inside output handler", e);
         }
     }
 }
