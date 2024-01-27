@@ -65,8 +65,8 @@ public class ExampleCryptoAlgorithm implements Algorithm {
                 mapToDouble(bar -> (bar.getClose() - bar.getOpen())).
                 boxed().toList());
         List<Double> closeOpenIncrements = new ArrayList<>(openCloseIncrements.size() - 1);
-        // for (int i = 0; i < singleBars.size() - 1; i++)
-        //    closeOpenIncrements.add(singleBars.get(i + 1).getOpen() - singleBars.get(i).getClose());
+        for (int i = 0; i < singleBars.size() - 1; i++)
+           closeOpenIncrements.add(singleBars.get(i + 1).getOpen() - singleBars.get(i).getClose());
 
         // Applying importance function regarding recent results
         for (int i = 0; i < openCloseIncrements.size(); i++) {
