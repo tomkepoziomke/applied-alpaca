@@ -1,8 +1,6 @@
 package tom.kepoziomke.connector;
 
-import net.jacobpeterson.alpaca.AlpacaAPI;
 import net.jacobpeterson.alpaca.rest.AlpacaClientException;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Objects of this class contain responses from the API.
@@ -16,7 +14,7 @@ public class Response<T> {
      * Constructor of a successful response.
      * @param value The object contained in a response.
      */
-    public Response(@NotNull T value) {
+    public Response(T value) {
         this.value = value;
         this.exception = null;
     }
@@ -25,7 +23,7 @@ public class Response<T> {
      * Constructor of an unsuccessful response.
      * @param exception The error info contained in a response.
      */
-    public Response(@NotNull AlpacaClientException exception) {
+    public Response(AlpacaClientException exception) {
         this.value = null;
         this.exception = exception;
     }
@@ -36,7 +34,7 @@ public class Response<T> {
      * @return The response.
      * @param <T> The expected type of the object in the response.
      */
-    public static <T> Response<T> exception(@NotNull AlpacaClientException exception) {
+    public static <T> Response<T> exception(AlpacaClientException exception) {
         return new Response<>(exception);
     }
 
@@ -46,7 +44,7 @@ public class Response<T> {
      * @return The response.
      * @param <T> The expected type of the object in the response.
      */
-    public static <T> Response<T> of(@NotNull T value) {
+    public static <T> Response<T> of(T value) {
         return new Response<>(value);
     }
 
